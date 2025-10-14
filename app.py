@@ -5,6 +5,9 @@ from flask import Flask, request, render_template, redirect, url_for
 app = Flask(__name__)
 DATABASE_URL = os.environ['DATABASE_URL']
 
+# Small redeploy test change below
+# Commit message: "Test redeploy to reload DB schema"
+
 @app.route('/')
 def home():
     return redirect(url_for('login'))
