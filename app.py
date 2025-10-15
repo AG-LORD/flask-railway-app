@@ -1,31 +1,29 @@
 import os
 import psycopg2
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, redirect, url_for
 
 app = Flask(__name__)
 DATABASE_URL = os.environ['DATABASE_URL']
 
-# Small redeploy test change below
-# Commit message: "Test redeploy to reload DB schema"
-
 @app.route('/')
 def home():
-    return redirect(url_for('login'))
+    return redirect(url_for('register'))
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-
-        conn = psycopg2.connect(DATABASE_URL)
-        cur = conn.cursor()
-        cur.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return "Registration Successful!"
+        try:
+            conn = psycopg2.connect(DATABASE_URL)
+            cur = conn.cursor()
+            cur.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+            conn.commit()
+            cur.close()
+            conn.close()
+            return "Registration Successful!"
+        except Exception as e:
+            return f"Error: {e}"
     return '''
         <form method="post">
             Username: <input name="username" type="text" required><br>
